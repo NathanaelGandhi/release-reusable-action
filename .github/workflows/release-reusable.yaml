@@ -43,7 +43,7 @@ jobs:
         uses: TriPSs/conventional-changelog-action@v3
         with:
           github-token: ${{ secrets.caller_token }}
-          skip-on-empty: true
+          skip-on-empty: false
           skip-git-pull: true
           version-file: "./VERSION.yaml"
           skip-version-file: ${{ env.skip_version_file_var }}
