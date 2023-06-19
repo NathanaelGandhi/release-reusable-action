@@ -1,0 +1,56 @@
+# Nathanael Gandhi | github.com/NathanaelGandhi
+
+name: 'Release Reusable'
+
+on:
+  workflow_call:
+    secrets:
+      caller_token:
+        required: true
+
+jobs:
+  release-conventional-changelog:
+    runs-on: ubuntu-latest
+    env:
+      skip_var: false
+    steps:
+      # check out the repository with all releases
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.caller_token }}
+      
+      # check if a version file exists
+      - name: Check VERSION.yaml file existence
+        id: check_version_yaml
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "VERSION.yaml"
+
+      - name: Set skip version file env
+        id: skip_version_file
+        if: steps.check_version_yaml.outputs.files_exists == 'false'
+        run: |
+          echo "::set-env name=skip_var::true" # Set the variable skip_var to true
+
+      # create release info and push it upstream
+      - name: Conventional changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.caller_token }}
+          skip-on-empty: true
+          skip-git-pull: true
+          version-file: "./VERSION.yaml"
+          skip-version-file: ${{ env.skip_var }}
+
+      # release info is now in main so we can continue
+      - name: Create release with changelog commit
+        if: steps.changelog.outputs.skipped == 'false'
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.caller_token }}
+          tag: ${{ steps.changelog.outputs.tag }}
+          name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
