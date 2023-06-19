@@ -1,3 +1,12 @@
+## [0.1.2](https://github.com/NathanaelGandhi/release-reusable-workflow/compare/v0.1.1...v0.1.2) (2023-06-19)
+
+
+### Bug Fixes
+
+* **release:** set skip-on-empty to false ([336ec83](https://github.com/NathanaelGandhi/release-reusable-workflow/commit/336ec83f2d124cf748e80e51ea9b4bcdfa157317))
+
+
+
 ## [0.1.1](https://github.com/NathanaelGandhi/release-reusable-workflow/compare/v0.1.0...v0.1.1) (2023-06-19)
 
 
